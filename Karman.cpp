@@ -67,7 +67,7 @@ int flow_solve(void){
   float cpfore;
   float cpback;
   float cpbtm;
-  float cptop
+  float cptop;
 
   for(int j=cy1; j<cy2+1; j++){
     cpfore = (2.0*p[cx1][j]+2.0*p[cx1][j+1])/2.0
