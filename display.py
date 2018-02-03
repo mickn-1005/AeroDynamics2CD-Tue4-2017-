@@ -30,11 +30,11 @@ plt.colorbar()
 filename = "./images/Karman0.png"
 plt.savefig(filename)
 
-for i in range(1,1001):
-    p = np.loadtxt('./pitr/pitr{}.csv'.format(i*10), delimiter=',')
+for i in range(1,11):
+    p = np.loadtxt('./pitr/pitr{}.csv'.format(i*1), delimiter=',')
     im = plt.contourf(x,y,p,interval, cmap='seismic')
     
-    filename = "./images/Karman{}.png".format(i*10)
+    filename = "./images/Karman{}.png".format(i*1)
     plt.savefig(filename)
     
 #ani = animation.FuncAnimation(fig, images, interval=100)

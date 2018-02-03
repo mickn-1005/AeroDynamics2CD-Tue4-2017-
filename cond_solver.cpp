@@ -1,6 +1,47 @@
 #include <iostream>
 #include <cmath>
 
+int iscalc(int i, int j){
+  if(((i>cx1) and (i<cx2)) and ((j>cy1) and (j<cy2))){
+    return 0;
+  }
+  if(((i>px1) and (i<px2)) and ((j>py1) and (j<py2))){
+    return 0;
+  }
+  if(((i>qx1) and (i<qx2)) and ((j>qy1) and (j<qy2))){
+    return 0;
+  }
+  else{
+    return 1;
+  }
+}
+
+int pwall(int x1, int x2, int y1, int y2){  // b.c. at wall
+  p[x1][y1] = p[x1-1][y1-1];    //wall condition
+  p[x1][y2] = p[x1-1][y2+1];
+  p[x2][y1] = p[x2+1][y1-1];
+  p[x2][y2] = p[x2+1][y2+1];
+
+  for(int j=y1+1; j<y2; j++){
+    p[x1][j] = p[x1-1][j];
+    p[x2][j] = p[x2+1][j];
+  }
+  for(int i=x1+1; i<x2; i++){
+    p[i][y1] = p[i][y1-1];
+    p[i][y2] = p[i][y2+1];
+  }
+  return 0;
+}
+int vwall(int x1, int x2, int y1, int y2){  // b.c. at wall
+  for(int i=x1; i<x2+1; i++){
+    for(int j=y1; j<y2+1; j++){
+      u[i][j] = 0.0;
+      v[i][j] = 0.0;
+    }
+  }
+  return 0;
+}
+
 int bound_p(void){
   for(int j=0; j<my+1; j++){
     p[0][j] = 0.0;    // inflow condition
@@ -11,19 +52,9 @@ int bound_p(void){
     p[i][my] = 0.0;   // bottom condition
   }
 
-  p[cx1][cy1] = p[cx1-1][cy1-1];    //wall condition
-  p[cx1][cy2] = p[cx1-1][cy2+1];
-  p[cx2][cy1] = p[cx2+1][cy1-1];
-  p[cx2][cy2] = p[cx2+1][cy2+1];
-
-  for(int j=cy1+1; j<cy2; j++){
-    p[cx1][j] = p[cx1-1][j];
-    p[cx2][j] = p[cx2+1][j];
-  }
-  for(int i=cx1+1; i<cx2; i++){
-    p[i][cy1] = p[i][cy1-1];
-    p[i][cy2] = p[i][cy2+1];
-  }
+  pwall(cx1,cx2,cy1,cy2);
+  pwall(px1,px2,py1,py2);
+  pwall(qx1,qx2,qy1,qy2);
 
   return 0;
 }
@@ -51,12 +82,10 @@ int bound_v(void){
     v[i][my] = 2.0*v[i][my-1] - v[i][my-2];
   }
 
-  for(int i=cx1; i<cx2+1; i++){
-    for(int j=cy1; j<cy2+1; j++){
-      u[i][j] = 0.0;
-      v[i][j] = 0.0;
-    }
-  }
+  vwall(cx1,cx2,cy1,cy2);
+  vwall(px1,px2,py1,py2);
+  vwall(qx1,qx2,qy1,qy2);
+
   return 0;
 }
 
@@ -70,7 +99,7 @@ int poiseq(float delt){
   float ux, uy, vx, vy;
   for(int i=1; i<mx; i++)  {
     for(int j=1; j<my; j++){
-      if(((i>cx1) and (i<cx2)) and ((j>cy1) and (j<cy2))){    //exclude cube
+      if(iscalc(i,j) == 0){    //exclude cube
         continue;
       }
       else{
@@ -93,7 +122,7 @@ int poiseq(float delt){
       //     std::cout << itr << '\n';
       // }
       for(int j=1; j<my; j++){
-        if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){  // exclude cube
+        if(iscalc(i,j) == 0){  // exclude cube
           continue;                                                   // 非不連続区間で差分取れる範囲以外を所外
         }
         else{
@@ -112,7 +141,7 @@ int poiseq(float delt){
     if(res < errorp){
       resp = res;
       itrp = itr;
-      // std::cout << "finish SOR::" << res << "," << itr << '\n';
+      std::cout << "finish SOR::" << res << "," << itr << '\n';
       break;
     }
   }
@@ -131,7 +160,7 @@ int veloeq(float delt){
 
   for(int i=1; i<mx; i++){    //pressure radient
     for(int j=1; j<my; j++){
-      if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+      if(iscalc(i,j) == 0){
         continue;
       }
       else{
@@ -143,7 +172,7 @@ int veloeq(float delt){
 
   for(int i=1; i<mx; i++){
     for(int j=1; j<my; j++){
-      if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+      if(iscalc(i,j) == 0){
         continue;
       }
       else{
@@ -176,7 +205,7 @@ int veloeq(float delt){
     }
   }
 
-  for(int i=cx1+1; i<cx2; i++){
+  for(int i=cx1+1; i<cx2; i++){   //advection term for y-axis
     u[i][cy1+1] = 2.0*u[i][cy1] - u[i][cy1-1];
     u[i][cy2-1] = 2.0*u[i][cy2] - u[i][cy2+1];
     v[i][cy1+1] = 2.0*v[i][cy1] - v[i][cy1-1];
@@ -185,7 +214,7 @@ int veloeq(float delt){
 
   for(int i=2; i<mx-1; i++){
     for(int j=2; j<my-1; j++){
-      if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+      if(iscalc(i,j) == 0){
         continue;
       }
       else{
@@ -199,7 +228,7 @@ int veloeq(float delt){
 
   for(int i=2; i<mx-1; i++){
     for(int j=2; j<my-1; j++){
-      if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+      if(iscalc(i,j) == 0){
         continue;
       }
       else{

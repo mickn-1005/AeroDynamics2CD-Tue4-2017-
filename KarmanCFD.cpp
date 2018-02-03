@@ -12,5 +12,3 @@ int main(void) {
 
   return 0;
 }
-
-// note: calculation time:: [Finished in 663.476s]
