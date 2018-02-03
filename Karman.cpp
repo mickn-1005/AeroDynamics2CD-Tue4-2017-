@@ -51,14 +51,23 @@ int flow_solve(void){
   bound_p();
   bound_v();
 
+  float cp1,cp2;
+
   for(int n=nbegin; n<nlast+1; n++){
-    if(n%10 ==0){
+    if(n%100 ==0){
       csvout(n);
     }
     poiseq(dt);
     bound_p();
     veloeq(dt);
     bound_v();
+
+    if(n%200 ==0){
+      cp1 = p[2*cx1-cx2][cy1];
+      cp2 = p[2*cx1-cx2][cy2];
+      std::cout << "itr No.//resp//itrp//cd//cl//cp1//cp2   ::  " <<
+                  n << "," << resp << "," << itrp  << "," << cd << "," << cl << "," << cp1 << "," << cp2 << '\n';
+    }
   }
 
   /*
@@ -70,23 +79,15 @@ int flow_solve(void){
   float cptop;
 
   for(int j=cy1; j<cy2+1; j++){
-    cpfore = (2.0*p[cx1][j]+2.0*p[cx1][j+1])/2.0
-    cpback = (2.0*p[cx2][j]+2.0*p[cx2][j+1])/2.0
+    cpfore = (2.0*p[cx1][j]+2.0*p[cx1][j+1])/2.0;
+    cpback = (2.0*p[cx2][j]+2.0*p[cx2][j+1])/2.0;
     cd += (cpfore-cpback)*dy;
   }
 
   for(int i=cx1; i<cx2+1; i++){
-    cptop = (2.0*p[i][cy2]+2.0*p[i+1][cy2])/2.0
-    cpbtm = (2.0*p[i][cy1]+2.0*p[i+1][cy2])/2.0
+    cptop = (2.0*p[i][cy2]+2.0*p[i+1][cy2])/2.0;
+    cpbtm = (2.0*p[i][cy1]+2.0*p[i+1][cy2])/2.0;
     cl += (cpbtm-cptop)*dx;
-  }
-
-  float cp1,cp2;
-  if(n%200 ==0){
-    cp1 = p[2*cx1-cx2][cy1];
-    cp2 = p[2*cx1-cx2][cy2];
-    std::cout << "itr No.//resp//itrp//cd//cl//cp1//cp2   ::  " <<
-                n << "," << resp << "," << itrp  << "," << cd << "," << cl << "," << cp1 << "," << cp2 << '\n';
   }
 
   return 0;
