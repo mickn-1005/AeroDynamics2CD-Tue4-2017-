@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-int csvw(FILE *ffile, char *fname, vector<vector<float>> f){
+int csvw(FILE *ffile, char *fname, vector<vector<float> > f){
   if((ffile = fopen(fname, "w")) == NULL){
     std::cout << "can't open file:::" << fname << '\n';
   }
@@ -45,6 +45,5 @@ int csvout(int num){
     csvw(fx, xname, x);
     csvw(fy, yname, y);
   }
-
   return 0;
 }

@@ -54,13 +54,20 @@ int flow_solve(void){
   float cp1,cp2;
 
   for(int n=nbegin; n<nlast+1; n++){
-    if(n%100 ==0){
+    if(n%50 ==0){
       csvout(n);
     }
     poiseq(dt);
     bound_p();
     veloeq(dt);
     bound_v();
+
+    if(n < 20){
+      cp1 = p[2*cx1-cx2][cy1];
+      cp2 = p[2*cx1-cx2][cy2];
+      std::cout << "itr No.//resp//itrp//cd//cl//cp1//cp2   ::  " <<
+                  n << "," << resp << "," << itrp  << "," << cd << "," << cl << "," << cp1 << "," << cp2 << '\n';
+    }
 
     if(n%200 ==0){
       cp1 = p[2*cx1-cx2][cy1];

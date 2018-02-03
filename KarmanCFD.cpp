@@ -7,7 +7,6 @@
 
 int main(void) {
   set_grids();
-
   flow_solve();
 
   return 0;

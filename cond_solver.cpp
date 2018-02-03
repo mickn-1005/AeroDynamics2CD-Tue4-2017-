@@ -16,6 +16,16 @@ int bound_p(void){
   p[cx2][cy1] = p[cx2+1][cy1-1];
   p[cx2][cy2] = p[cx2+1][cy2+1];
 
+  p[px1][py1] = p[px1-1][py1-1];    //wall condition
+  p[px1][py2] = p[px1-1][py2+1];
+  p[px2][py1] = p[px2+1][py1-1];
+  p[px2][py2] = p[px2+1][py2+1];
+
+  p[qx1][qy1] = p[qx1-1][qy1-1];    //wall condition
+  p[qx1][qy2] = p[qx1-1][qy2+1];
+  p[qx2][qy1] = p[qx2+1][qy1-1];
+  p[qx2][qy2] = p[qx2+1][qy2+1];
+
   for(int j=cy1+1; j<cy2; j++){
     p[cx1][j] = p[cx1-1][j];
     p[cx2][j] = p[cx2+1][j];
@@ -23,6 +33,24 @@ int bound_p(void){
   for(int i=cx1+1; i<cx2; i++){
     p[i][cy1] = p[i][cy1-1];
     p[i][cy2] = p[i][cy2+1];
+  }
+
+  for(int j=py1+1; j<py2; j++){
+    p[px1][j] = p[px1-1][j];
+    p[px2][j] = p[px2+1][j];
+  }
+  for(int i=px1+1; i<px2; i++){
+    p[i][py1] = p[i][py1-1];
+    p[i][py2] = p[i][py2+1];
+  }
+
+  for(int j=qy1+1; j<qy2; j++){
+    p[qx1][j] = p[qx1-1][j];
+    p[qx2][j] = p[qx2+1][j];
+  }
+  for(int i=qx1+1; i<qx2; i++){
+    p[i][qy1] = p[i][qy1-1];
+    p[i][qy2] = p[i][qy2+1];
   }
 
   return 0;
@@ -57,6 +85,20 @@ int bound_v(void){
       v[i][j] = 0.0;
     }
   }
+
+  for(int i=px1; i<px2+1; i++){
+    for(int j=py1; j<py2+1; j++){
+      u[i][j] = 0.0;
+      v[i][j] = 0.0;
+    }
+  }
+
+  for(int i=qx1; i<qx2+1; i++){
+    for(int j=qy1; j<qy2+1; j++){
+      u[i][j] = 0.0;
+      v[i][j] = 0.0;
+    }
+  }
   return 0;
 }
 
@@ -71,6 +113,12 @@ int poiseq(float delt){
   for(int i=1; i<mx; i++)  {
     for(int j=1; j<my; j++){
       if(((i>cx1) and (i<cx2)) and ((j>cy1) and (j<cy2))){    //exclude cube
+        continue;
+      }
+      else if(((i>px1) and (i<px2)) and ((j>py1) and (j<py2))){
+        continue;
+      }
+      else if(((i>qx1) and (i<qx2)) and ((j>qy1) and (j<qy2))){
         continue;
       }
       else{
@@ -95,6 +143,12 @@ int poiseq(float delt){
       for(int j=1; j<my; j++){
         if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){  // exclude cube
           continue;                                                   // 非不連続区間で差分取れる範囲以外を所外
+        }
+        else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+          continue;
+        }
+        else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
+          continue;
         }
         else{
           dp = (p[i+1][j] + p[i-1][j])/(std::pow(dx,2.0))
@@ -134,6 +188,12 @@ int veloeq(float delt){
       if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
         continue;
       }
+      else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+        continue;
+      }
+      else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
+        continue;
+      }
       else{
         urhs[i][j] = -(p[i+1][j] - p[i-1][j])/(2.0*dx);
         vrhs[i][j] = -(p[i][j+1] - p[i][j-1])/(2.0*dy);
@@ -144,6 +204,12 @@ int veloeq(float delt){
   for(int i=1; i<mx; i++){
     for(int j=1; j<my; j++){
       if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+        continue;
+      }
+      else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+        continue;
+      }
+      else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
         continue;
       }
       else{
@@ -167,6 +233,12 @@ int veloeq(float delt){
       if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
         continue;
       }
+      else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+        continue;
+      }
+      else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
+        continue;
+      }
       else{
         urhs[i][j] += -u[i][j]*(-u[i+2][j]+8.0*(u[i+1][j]-u[i-1][j]) + u[i-2][j])/(12.0*dx)
                       -abs(u[i][j])*(u[i+2][j]-4.0*u[i+1][j]+6.0*u[i][j]-4.0*u[i-1][j]+u[i-2][j])/(4.0*dx);
@@ -188,6 +260,12 @@ int veloeq(float delt){
       if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
         continue;
       }
+      else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+        continue;
+      }
+      else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
+        continue;
+      }
       else{
         urhs[i][j] += -v[i][j]*(-u[i][j+2]+8.0*(u[i][j+1]-u[i][j-1]) + u[i][j-2])/(12.0*dy)
                       -abs(v[i][j])*(u[i][j+2]-4.0*u[i][j+1]+6.0*u[i][j]-4.0*u[i][j-1]+u[i][j-2])/(4.0*dy);
@@ -200,6 +278,12 @@ int veloeq(float delt){
   for(int i=2; i<mx-1; i++){
     for(int j=2; j<my-1; j++){
       if(((i>cx1-1) and (i<cx2+1)) and ((j>cy1-1) and (j<cy2+1))){
+        continue;
+      }
+      else if(((i>px1-1) and (i<px2+1)) and ((j>py1-1) and (j<py2+1))){
+        continue;
+      }
+      else if(((i>qx1-1) and (i<qx2+1)) and ((j>qy1-1) and (j<qy2+1))){
         continue;
       }
       else{

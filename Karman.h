@@ -11,17 +11,32 @@ const float u_0 = 1.0;  //U_infty
 /*
 definition about grid...
 */
-float L = 1.0;   // cube length [m]
-float LX = 10.0;   //calculation range for x axis(No dimention)
-float LY = 30.0;
-int mdx = 500; //how many meshes
-int mdy = 300;
-int mx = 400; //
-int my = 200;
-int cx1 = 95;  // set vertex of cube
-int cx2 = 105;
-int cy1 = 95;
-int cy2 = 105;
+const float L = 1.0;   // cube length [m]
+const float LX = 10.0;   //calculation range for x axis(No dimention)
+const float LY = 30.0;
+const int mdx = 500; //how many meshes
+const int mdy = 300;
+const int mx = 400; //
+const int my = 200;
+const int cx1 = 95;  // set vertex of cube
+const int cx2 = 105;
+const int cy1 = 95;
+const int cy2 = 105;
+
+// const int cx1 = 95;  // set vertex of cube
+// const int cx2 = 105;
+// const int cy1 = 85;
+// const int cy2 = 95;
+
+const int px1 = 145;
+const int px2 = 155;
+const int py1 = 95;
+const int py2 = 105;
+const int qx1 = 195;
+const int qx2 = 205;
+const int qy1 = 95;
+const int qy2 = 105;
+
 int icent = (int)((cx1+cx2)*0.5); //center of cube (coordinate origin)
 int jcent = (int)((cy1+cy2)*0.5);
 float dx = L/((float)(cx2-cx1));  // x axis mesh range[m]
